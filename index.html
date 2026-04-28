@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصريح اقامة انشطة داخل المنشآت التابعة للوزارة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Arial', sans-serif;
+            background: #e0e0e0;
+            padding: 20px;
+            direction: rtl;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        /* Buttons above the paper */
+        .buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            max-width: 210mm;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #2d5a27;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1e3d1a;
+        }
+
+        .btn-secondary {
+            background: #c41e3a;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #9a1830;
+        }
+
+        .btn-warning {
+            background: #f0ad4e;
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            background: #ec971f;
+        }
+
+        .btn-info {
+            background: #5bc0de;
+            color: #000;
+        }
+
+        .btn-info:hover {
+            background: #46b8da;
+        }
+
+        /* A4 Paper Container */
+        .a4-paper {
+            width: 210mm;
+            min-height: 290mm;
+            background: white;
+            padding: 15mm;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        /* Watermark */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.10;
+            pointer-events: none;
+            z-index: 0;
+            width: 600px;
+            height:600px;
+        }
+
+        .watermark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #c41e3a;
+            padding-bottom: 12px;
+            margin-bottom: 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-left, .header-right {
+            text-align: center;
+            flex: 1;
+        }
+
+        .header-center {
+            flex: 0 0 120px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .header h2 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #000;
+            margin: 2px 0;
+        }
+
+        .header h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            margin: 2px 0;
+        }
+
+        .header-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 20px 0;
+            color: #000;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .form-group.full-width {
+            width: 100%;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 13px;
+            white-space: nowrap;
+            color: #000;
+        }
+
+        /* Transparent inputs with centered text */
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="date"] {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            font-size: 13px;
+            font-family: 'Cairo', sans-serif;
+            min-width: 120px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(2px);
+            text-align: center;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #c41e3a;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Signatures Section - Two separate boxes */
+        .signatures-section {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+            gap: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signature-box {
+            text-align: center;
+            width: 50%;
+            border: 2px dashed #333;
+            border-radius: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(1px);
+        }
+
+        .signature-line {
+            height: 80px;
+            margin-bottom: 6px;
+            position: relative;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .signature-line canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            display: block;
+        }
+
+        .signature-label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #000;
+            margin-top: 4px;
+        }
+
+        .notes-section {
+            margin-top:80px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(1px);
+        }
+
+        .notes-title {
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .notes-list {
+            list-style: none;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .notes-list li::before {
+            content: "◆ ";
+            color: #c41e3a;
+        }
+
+        .footer-code {
+            text-align: left;
+            font-size: 10px;
+            color: #666;
+            margin-top: 15px;
+            font-family: monospace;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .a4-paper {
+                width: 100%;
+                min-height: auto;
+                padding: 10mm;
+                box-shadow: none;
+            }
+            .buttons {
+                display: none !important;
+            }
+            .form-group input {
+                border: 2px solid #333 !important;
+                background: rgba(255, 255, 255, 0.3) !important;
+                text-align: center !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .signature-line {
+                background: rgba(255, 255, 255, 0.1) !important;
+            }
+            .signature-box {
+                border: 2px dashed #333 !important;
+                background: rgba(255, 255, 255, 0.2) !important;
+            }
+            .notes-section {
+                background: rgba(255, 255, 255, 0.3) !important;
+                border: 1px solid #ddd !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .watermark {
+                opacity: 0.08 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .a4-paper {
+                width: 100%;
+                padding: 10px;
+            }
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .header-center {
+                order: -1;
+            }
+            .signatures-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .signature-box {
+                width: 100%;
+            }
+            .watermark {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+<base target="_blank">
+<base target="_blank">
+<base target="_blank">
+</head>
+<body>
+    <!-- Action Buttons - Above the paper -->
+    <div class="buttons">
+        <button class="btn btn-primary" onclick="printForm()">🖨️ طباعة الصفحة</button>
+        <button class="btn btn-info" onclick="saveAsPDF()">📄 حفظ كـ PDF</button>
+        <button class="btn btn-secondary" onclick="saveData()">💾 حفظ البيانات</button>
+        <button class="btn btn-warning" onclick="clearForm()">🗑️ مسح الكل</button>
+    </div>
+
+    <div class="a4-paper" id="formContent">
+        <!-- Watermark -->
+        <div class="watermark">
+            <img src="imag.jpg" alt="شعار وزارة الشباب والرياضة" onerror="this.style.display='none'">
+        </div>
+
+        <div class="content">
+            <!-- Header Section -->
+            <div class="header">
+                <div class="header-right">
+                    <h2>جمهورية العراق</h2>
+                    <h2>وزارة الشباب والرياضة</h2>
+                    <h3>مكتب الوزير</h3>
+                    <h3>قسم التصاريح الامنية</h3>
+                </div>
+
+                <div class="header-center">
+                    <img src="imag.jpg"
+                         alt="شعار وزارة الشباب والرياضة"
+                         class="header-logo"
+                         onerror="this.style.display='none'">
+                </div>
+
+                <div class="header-left">
+                    <h2>Republic of Iraq</h2>
+                    <h2>Ministry Of Youth & Sport</h2>
+                    <h3>Minister Office</h3>
+                    <h3>Security Permits Department</h3>
+                </div>
+            </div>
+
+            <!-- Title -->
+            <div class="title">تصريح اقامة انشطة داخل المنشآت التابعة للوزارة</div>
+
+            <!-- Form Fields -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label>اسم المخول الثلاثي:</label>
+                    <input type="text" id="fullName" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label>رقم هوية المخول:</label>
+                    <input type="text" id="idNumber" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>نوع النشاط:</label>
+                    <input type="text" id="activityType" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label>الجهة المقيمة للنشاط:</label>
+                    <input type="text" id="organizer" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>الجهة المستضيفة للنشاط:</label>
+                    <input type="text" id="hostEntity" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>عدد المشاركين في النشاط:</label>
+                    <input type="text" id="participants" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>وجود قنوات اعلامية تذكر القنوات:</label>
+                    <input type="text" id="mediaChannels" placeholder="">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group full-width">
+                    <label>رقم هاتف المخول:</label>
+                    <input type="text" id="phoneNumber" placeholder="">
+                </div>
+            </div>
+
+            <!-- Signatures Section - Two separate dashed boxes -->
+            <div class="signatures-section">
+                <div class="signature-box">
+                    <div class="signature-line" id="sigBox1">
+                        <canvas id="sig1"></canvas>
+                    </div>
+                    <div class="signature-label">ختم وتوقيع المدير العام</div>
+                </div>
+
+                <div class="signature-box">
+                    <div class="signature-line" id="sigBox2">
+                        <canvas id="sig2"></canvas>
+                    </div>
+                    <div class="signature-label">ختم وتوقيع قسم التصاريح الامنية</div>
+                </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="notes-section">
+                <div class="notes-title">ملاحظة :-</div>
+                <ul class="notes-list">
+                    <li>ارفاق كتاب رسمي صادر من الجهة المعنية.</li>
+                    <li>صورة من هوية المخول وسنوية العجلة ان وجدت.</li>
+                    <li>يتحمل المخول مسؤولية الاشخاص الداخلين الى مقر الوزارة لحين خروجهم.</li>
+                    <li>يمنع ادخال واخراج المواد بالنشاط خارج اوقات الدوام الرسمي والعطل الرسمية.</li>
+                </ul>
+            </div>
+
+            <div class="footer-code">O-Qp-02-03-02-20SEP-2024</div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // SIGNATURE HANDLING
+        // ============================================
+        const signatures = {};
+
+        function setupSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const container = document.getElementById(canvasId.replace('sig', 'sigBox'));
+
+            if (!canvas || !container) {
+                console.error('Canvas or container not found:', canvasId);
+                return;
+            }
+
+            // Set canvas dimensions to match container
+            function resizeCanvas() {
+                const rect = container.getBoundingClientRect();
+                canvas.width = rect.width;
+                canvas.height = rect.height;
+                canvas.style.width = rect.width + 'px';
+                canvas.style.height = rect.height + 'px';
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            let isDrawing = false;
+            let lastX = 0;
+            let lastY = 0;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                let clientX, clientY;
+
+                if (e.touches && e.touches.length > 0) {
+                    clientX = e.touches[0].clientX;
+                    clientY = e.touches[0].clientY;
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+
+                return {
+                    x: clientX - rect.left,
+                    y: clientY - rect.top
+                };
+            }
+
+            function startDrawing(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                lastX = pos.x;
+                lastY = pos.y;
+                e.preventDefault();
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                const pos = getPos(e);
+
+                ctx.beginPath();
+                ctx.moveTo(lastX, lastY);
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+
+                lastX = pos.x;
+                lastY = pos.y;
+                e.preventDefault();
+            }
+
+            function stopDrawing(e) {
+                isDrawing = false;
+                if (e) e.preventDefault();
+            }
+
+            // Mouse events
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseout', stopDrawing);
+
+            // Touch events
+            canvas.addEventListener('touchstart', startDrawing, { passive: false });
+            canvas.addEventListener('touchmove', draw, { passive: false });
+            canvas.addEventListener('touchend', stopDrawing, { passive: false });
+
+            signatures[canvasId] = { canvas, ctx };
+        }
+
+        // Initialize both signatures after DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            setupSignature('sig1');
+            setupSignature('sig2');
+            loadData();
+        });
+
+        function clearSignature(canvasId) {
+            const sig = signatures[canvasId];
+            if (sig) {
+                sig.ctx.clearRect(0, 0, sig.canvas.width, sig.canvas.height);
+            }
+        }
+
+        // ============================================
+        // PRINT / PDF
+        // ============================================
+        function printForm() {
+            const buttonsDiv = document.querySelector('.buttons');
+            buttonsDiv.style.display = 'none';
+
+            window.print();
+
+            setTimeout(function() {
+                buttonsDiv.style.display = 'flex';
+            }, 100);
+        }
+
+        function saveAsPDF() {
+            const buttonsDiv = document.querySelector('.buttons');
+            buttonsDiv.style.display = 'none';
+
+            const originalTitle = document.title;
+            document.title = 'تصريح_اقامة_انشطة';
+
+            window.print();
+
+            setTimeout(function() {
+                buttonsDiv.style.display = 'flex';
+                document.title = originalTitle;
+            }, 100);
+
+            alert('اختر "Save as PDF" من قائمة الطابعة');
+        }
+
+        // ============================================
+        // SAVE / LOAD DATA
+        // ============================================
+        function saveData() {
+            try {
+                const data = {
+                    fullName: document.getElementById('fullName').value,
+                    idNumber: document.getElementById('idNumber').value,
+                    activityType: document.getElementById('activityType').value,
+                    organizer: document.getElementById('organizer').value,
+                    hostEntity: document.getElementById('hostEntity').value,
+                    participants: document.getElementById('participants').value,
+                    mediaChannels: document.getElementById('mediaChannels').value,
+                    phoneNumber: document.getElementById('phoneNumber').value
+                };
+
+                if (signatures['sig1']) {
+                    data.sig1 = signatures['sig1'].canvas.toDataURL();
+                }
+                if (signatures['sig2']) {
+                    data.sig2 = signatures['sig2'].canvas.toDataURL();
+                }
+
+                localStorage.setItem('permitFormData_v9', JSON.stringify(data));
+                alert('✅ تم حفظ البيانات بنجاح في المتصفح!');
+            } catch (e) {
+                console.error('Save error:', e);
+                alert('❌ حدث خطأ أثناء الحفظ: ' + e.message);
+            }
+        }
+
+        function loadData() {
+            try {
+                const saved = localStorage.getItem('permitFormData_v9');
+                if (!saved) return;
+
+                const data = JSON.parse(saved);
+
+                document.getElementById('fullName').value = data.fullName || '';
+                document.getElementById('idNumber').value = data.idNumber || '';
+                document.getElementById('activityType').value = data.activityType || '';
+                document.getElementById('organizer').value = data.organizer || '';
+                document.getElementById('hostEntity').value = data.hostEntity || '';
+                document.getElementById('participants').value = data.participants || '';
+                document.getElementById('mediaChannels').value = data.mediaChannels || '';
+                document.getElementById('phoneNumber').value = data.phoneNumber || '';
+
+                setTimeout(function() {
+                    if (data.sig1 && signatures['sig1']) {
+                        const img1 = new Image();
+                        img1.onload = function() {
+                            signatures['sig1'].ctx.drawImage(img1, 0, 0);
+                        };
+                        img1.src = data.sig1;
+                    }
+                    if (data.sig2 && signatures['sig2']) {
+                        const img2 = new Image();
+                        img2.onload = function() {
+                            signatures['sig2'].ctx.drawImage(img2, 0, 0);
+                        };
+                        img2.src = data.sig2;
+                    }
+                }, 500);
+
+            } catch (e) {
+                console.error('Load error:', e);
+            }
+        }
+
+        function clearForm() {
+            if (confirm('هل أنت متأكد من مسح جميع البيانات؟')) {
+                document.querySelectorAll('input').forEach(function(input) {
+                    input.value = '';
+                });
+                clearSignature('sig1');
+                clearSignature('sig2');
+                localStorage.removeItem('permitFormData_v9');
+                alert('🗑️ تم مسح جميع البيانات');
+            }
+        }
+    </script>
+</body>
+</html>
