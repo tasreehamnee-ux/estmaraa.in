@@ -222,7 +222,7 @@
             background: rgba(255, 255, 255, 0.5);
         }
 
-        /* Signatures Section - Two separate boxes */
+        /* Signatures Section - Two separate boxes for manual signing */
         .signatures-section {
             display: flex;
             justify-content: space-between;
@@ -246,15 +246,7 @@
             height: 80px;
             margin-bottom: 6px;
             position: relative;
-            cursor: pointer;
             background: rgba(255, 255, 255, 0.1);
-        }
-
-        .signature-line canvas {
-            width: 100%;
-            height: 100%;
-            cursor: crosshair;
-            display: block;
         }
 
         .signature-label {
@@ -379,6 +371,7 @@
 <base target="_blank">
 <base target="_blank">
 <base target="_blank">
+<base target="_blank">
 </head>
 <body>
     <!-- Action Buttons - Above the paper -->
@@ -474,19 +467,15 @@
                 </div>
             </div>
 
-            <!-- Signatures Section - Two separate dashed boxes -->
+            <!-- Signatures Section - Two separate dashed boxes for manual signing -->
             <div class="signatures-section">
                 <div class="signature-box">
-                    <div class="signature-line" id="sigBox1">
-                        <canvas id="sig1"></canvas>
-                    </div>
+                    <div class="signature-line"></div>
                     <div class="signature-label">ختم وتوقيع المدير العام</div>
                 </div>
 
                 <div class="signature-box">
-                    <div class="signature-line" id="sigBox2">
-                        <canvas id="sig2"></canvas>
-                    </div>
+                    <div class="signature-line"></div>
                     <div class="signature-label">ختم وتوقيع قسم التصاريح الامنية</div>
                 </div>
             </div>
@@ -507,115 +496,6 @@
     </div>
 
     <script>
-        // ============================================
-        // SIGNATURE HANDLING
-        // ============================================
-        const signatures = {};
-
-        function setupSignature(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            const container = document.getElementById(canvasId.replace('sig', 'sigBox'));
-
-            if (!canvas || !container) {
-                console.error('Canvas or container not found:', canvasId);
-                return;
-            }
-
-            // Set canvas dimensions to match container
-            function resizeCanvas() {
-                const rect = container.getBoundingClientRect();
-                canvas.width = rect.width;
-                canvas.height = rect.height;
-                canvas.style.width = rect.width + 'px';
-                canvas.style.height = rect.height + 'px';
-            }
-
-            resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
-            const ctx = canvas.getContext('2d');
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-
-            let isDrawing = false;
-            let lastX = 0;
-            let lastY = 0;
-
-            function getPos(e) {
-                const rect = canvas.getBoundingClientRect();
-                let clientX, clientY;
-
-                if (e.touches && e.touches.length > 0) {
-                    clientX = e.touches[0].clientX;
-                    clientY = e.touches[0].clientY;
-                } else {
-                    clientX = e.clientX;
-                    clientY = e.clientY;
-                }
-
-                return {
-                    x: clientX - rect.left,
-                    y: clientY - rect.top
-                };
-            }
-
-            function startDrawing(e) {
-                isDrawing = true;
-                const pos = getPos(e);
-                lastX = pos.x;
-                lastY = pos.y;
-                e.preventDefault();
-            }
-
-            function draw(e) {
-                if (!isDrawing) return;
-                const pos = getPos(e);
-
-                ctx.beginPath();
-                ctx.moveTo(lastX, lastY);
-                ctx.lineTo(pos.x, pos.y);
-                ctx.stroke();
-
-                lastX = pos.x;
-                lastY = pos.y;
-                e.preventDefault();
-            }
-
-            function stopDrawing(e) {
-                isDrawing = false;
-                if (e) e.preventDefault();
-            }
-
-            // Mouse events
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseout', stopDrawing);
-
-            // Touch events
-            canvas.addEventListener('touchstart', startDrawing, { passive: false });
-            canvas.addEventListener('touchmove', draw, { passive: false });
-            canvas.addEventListener('touchend', stopDrawing, { passive: false });
-
-            signatures[canvasId] = { canvas, ctx };
-        }
-
-        // Initialize both signatures after DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            setupSignature('sig1');
-            setupSignature('sig2');
-            loadData();
-        });
-
-        function clearSignature(canvasId) {
-            const sig = signatures[canvasId];
-            if (sig) {
-                sig.ctx.clearRect(0, 0, sig.canvas.width, sig.canvas.height);
-            }
-        }
-
         // ============================================
         // PRINT / PDF
         // ============================================
@@ -663,13 +543,6 @@
                     phoneNumber: document.getElementById('phoneNumber').value
                 };
 
-                if (signatures['sig1']) {
-                    data.sig1 = signatures['sig1'].canvas.toDataURL();
-                }
-                if (signatures['sig2']) {
-                    data.sig2 = signatures['sig2'].canvas.toDataURL();
-                }
-
                 localStorage.setItem('permitFormData_v9', JSON.stringify(data));
                 alert('✅ تم حفظ البيانات بنجاح في المتصفح!');
             } catch (e) {
@@ -694,23 +567,6 @@
                 document.getElementById('mediaChannels').value = data.mediaChannels || '';
                 document.getElementById('phoneNumber').value = data.phoneNumber || '';
 
-                setTimeout(function() {
-                    if (data.sig1 && signatures['sig1']) {
-                        const img1 = new Image();
-                        img1.onload = function() {
-                            signatures['sig1'].ctx.drawImage(img1, 0, 0);
-                        };
-                        img1.src = data.sig1;
-                    }
-                    if (data.sig2 && signatures['sig2']) {
-                        const img2 = new Image();
-                        img2.onload = function() {
-                            signatures['sig2'].ctx.drawImage(img2, 0, 0);
-                        };
-                        img2.src = data.sig2;
-                    }
-                }, 500);
-
             } catch (e) {
                 console.error('Load error:', e);
             }
@@ -721,12 +577,15 @@
                 document.querySelectorAll('input').forEach(function(input) {
                     input.value = '';
                 });
-                clearSignature('sig1');
-                clearSignature('sig2');
                 localStorage.removeItem('permitFormData_v9');
                 alert('🗑️ تم مسح جميع البيانات');
             }
         }
+
+        // Initialize load after DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+        });
     </script>
 </body>
 </html>
