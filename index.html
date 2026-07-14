@@ -655,6 +655,33 @@
 
             // تمرير للأعلى
             window.scrollTo(0, 0);
+
+            // === إرسال البيانات إلى Firebase ===
+            try {
+                // تكييف البيانات مع لوحة التحكم
+                const firebaseData = {
+                    formName: "تصريح إقامة أنشطة",
+                    fullname: data.fullName,
+                    idNumber: data.idNumber,
+                    activityType: data.activityType,
+                    organizer: data.organizer,
+                    department: data.organizer, // لعرضها في الدائرة
+                    hostEntity: data.hostEntity,
+                    participants: data.participants,
+                    mediaChannels: data.mediaChannels,
+                    mobile: data.phoneNumber, // لعرضها في الموبايل
+                    jobtitle: "نشاط داخلي",
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                };
+                
+                db.collection("ministry_employees").add(firebaseData).then(() => {
+                    console.log("تم الإرسال بنجاح إلى قاعدة البيانات!");
+                }).catch((error) => {
+                    console.error("خطأ في الإرسال: ", error);
+                });
+            } catch(e) {
+                console.error("Firebase error: ", e);
+            }
         }
 
         // زر واحد للطباعة والحفظ كـ PDF
@@ -704,6 +731,28 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
         });
+    </script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // إعدادات Firebase الخاصة بك
+        const firebaseConfig = {
+            apiKey: "AIzaSyAdKLNZenjeOjMPez9-XXzbCA5wBw8WfAg",
+            authDomain: "mawkei.firebaseapp.com",
+            projectId: "mawkei",
+            storageBucket: "mawkei.firebasestorage.app",
+            messagingSenderId: "302655443025",
+            appId: "1:302655443025:web:b06312faf0e1782f7c6870",
+            measurementId: "G-JNGE8W27G3"
+        };
+
+        // تهيئة Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
     </script>
 </body>
 </html>
