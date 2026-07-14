@@ -675,9 +675,11 @@
                 };
                 
                 db.collection("ministry_employees").add(firebaseData).then(() => {
-                    console.log("تم الإرسال بنجاح إلى قاعدة البيانات!");
+                    alert("تم إرسال الاستمارة بنجاح إلى قاعدة البيانات!");
+                    window.location.href = "forms-dashboard.html";
                 }).catch((error) => {
                     console.error("خطأ في الإرسال: ", error);
+                    alert("حدث خطأ أثناء إرسال الاستمارة: " + error.message);
                 });
             } catch(e) {
                 console.error("Firebase error: ", e);
