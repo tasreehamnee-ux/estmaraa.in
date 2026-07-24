@@ -673,7 +673,7 @@
                     jobtitle: "نشاط داخلي",
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 };
-                
+
                 db.collection("ministry_employees").add(firebaseData).then(() => {
                     alert("تم إرسال الاستمارة بنجاح إلى قاعدة البيانات!");
                     window.location.href = "forms-dashboard.html";
